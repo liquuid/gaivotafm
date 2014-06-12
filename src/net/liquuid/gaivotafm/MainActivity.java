@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -14,6 +15,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	private static final String CATEGORIA = "livro";
 	private PlayerMp3 player = new PlayerMp3();
 	private Button btStart;
+	private WebView webView;
 
 	
 	@Override
@@ -22,6 +24,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_main);
 		btStart = (Button) findViewById(R.id.button1);
 		btStart.setOnClickListener(this);
+		webView = (WebView) findViewById(R.id.webView1);
+		String summary = "<html><body><a href=\"http://gaivota.fm.br/blog\">Confira</a></html>";
+		webView.loadData(summary, "text/html", null);
+	    //webView.loadUrl("http://gaivota.fm.br/blog/feed");
 
 	}
 
