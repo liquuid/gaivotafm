@@ -17,7 +17,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	private Button btStart;
 	private WebView webView;
 
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
