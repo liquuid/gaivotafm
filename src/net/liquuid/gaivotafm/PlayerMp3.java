@@ -24,6 +24,9 @@ public class PlayerMp3 implements OnCompletionListener{
 			return false;
 		}
 	}
+	public String status(){
+		return player.isPlaying() ? "playing" : "stoped";
+	}
 	public PlayerMp3(){
 		player = new MediaPlayer();
 		player.setAudioStreamType(AudioManager.STREAM_MUSIC);

@@ -16,17 +16,30 @@ public class MainActivity extends Activity implements OnClickListener {
 	private PlayerMp3 player = new PlayerMp3();
 	private Button btStart;
 	private WebView webView;
+	private String mp3 = "http://stream.gaivota.fm.br:8000/1049.mp3";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		btStart = (Button) findViewById(R.id.button1);
+
+		if (savedInstanceState != null) {
+			String status = savedInstanceState.getString("playerStatus");
+			if (status == "playing") {
+				btStart.setText("Pause");
+				player.start(mp3);
+			} else {
+				btStart.setText("Play!");
+				player.pause();
+			}
+		}
+
 		btStart.setOnClickListener(this);
 		webView = (WebView) findViewById(R.id.webView1);
 		String summary = "<html><body><a href=\"http://gaivota.fm.br/blog\">Confira</a></html>";
 		webView.loadData(summary, "text/html", null);
-	    //webView.loadUrl("http://gaivota.fm.br/blog/feed");
+		// webView.loadUrl("http://gaivota.fm.br/blog/feed");
 
 	}
 
@@ -40,25 +53,29 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View view) {
 		try {
-			if(view == btStart) {
-				if (player.isPlaying()){
+			if (view == btStart) {
+				if (player.isPlaying()) {
 					btStart.setText("Play!");
 					player.pause();
 				} else {
-					String mp3 = "http://stream.gaivota.fm.br:8000/1049.mp3";
 					player.start(mp3);
 					btStart.setText("Pause");
 				}
-			} 
+			}
 		} catch (Exception e) {
-			Log.e(CATEGORIA, e.getMessage(), e );
+			Log.e(CATEGORIA, e.getMessage(), e);
 			Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-			
 		}
 	}
-	
+
 	@Override
-	protected void onDestroy(){
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putString("playerStatus", player.status());
+	}
+
+	@Override
+	protected void onDestroy() {
 		super.onDestroy();
 		player.fechar();
 	}
