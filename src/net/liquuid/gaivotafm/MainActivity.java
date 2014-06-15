@@ -17,6 +17,9 @@ public class MainActivity extends Activity implements OnClickListener {
 	private Button btStart;
 	private WebView webView;
 	private String mp3 = "http://stream.gaivota.fm.br:8000/1049.mp3";
+	private String RSSUrl = "http://gaivota.fm.br/blog/feed";
+	private XmlHandler obj;
+	private String html = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,21 +37,28 @@ public class MainActivity extends Activity implements OnClickListener {
 				player.pause();
 			}
 		}
+		obj = new XmlHandler(RSSUrl);
+		obj.fetchXML();
+		obj.getPosts();
+
+		while (obj.parsingComplete);
+		// System.out.println(obj.getPosts());
+		html = obj.getPosts();
 
 		btStart.setOnClickListener(this);
+
 		webView = (WebView) findViewById(R.id.webView1);
-		String summary = "<html><body><a href=\"http://gaivota.fm.br/blog\">Confira</a></html>";
-		webView.loadData(summary, "text/html", null);
+
+		webView.loadData(obj.getPosts(), "text/html", "utf-8");
 		// webView.loadUrl("http://gaivota.fm.br/blog/feed");
 
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
+	/*
+	 * @Override public boolean onCreateOptionsMenu(Menu menu) { // Inflate the
+	 * menu; this adds items to the action bar if it is present.
+	 * getMenuInflater().inflate(R.menu.main, menu); return true; }
+	 */
 
 	@Override
 	public void onClick(View view) {
