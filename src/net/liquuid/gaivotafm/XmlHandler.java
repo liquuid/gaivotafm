@@ -104,6 +104,9 @@ public class XmlHandler {
 							+ "linear, left bottom, right bottom,color-stop(0, rgb(255,255,255)),color-stop(0.1, rgb"
 							+ "(221,221,221)),color-stop(0.9, rgb(221,221,221)),color-stop(1, rgb(255,255,255)));}"
 							+ "</style></head><body>";
+					
+
+					
 					String summary = "";
 					while (iterator.hasNext()) {
 						Map.Entry mapEntry = (Map.Entry) iterator.next();

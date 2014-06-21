@@ -19,12 +19,31 @@
             android:layout_height="wrap_content"
             android:src="@drawable/logo_borda_direita_site" />
 
-        <Button
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:orientation="vertical" >
+
+            <ToggleButton
+                android:id="@+id/toggleButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ToggleButton"
+                android:background="@drawable/custom_btn_toggle"
+                android:textOff="NO AR"
+                android:textOn="NO AR" />
+
+        <ImageButton
             android:id="@+id/button1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="18dp"
+            android:src="@drawable/play64"
             android:text="Play" />
+
+          </LinearLayout>
+
+
     </LinearLayout>
 
     <LinearLayout
@@ -42,16 +61,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Blog Gaivota FM"
-            android:textColor="#FFFFFF"
-            
-            
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#FFFFFF" />
+        
+        <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dip"
+        android:paddingBottom="10dip"
+        android:paddingLeft="1dip"
+        android:paddingRight="1dip"
+        >
 
         <WebView
             android:id="@+id/webView1"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
+        
+        </FrameLayout>
     </LinearLayout>
 
 </LinearLayout>
