@@ -51,7 +51,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 
 			if (status == "playing") {
-				btStart.setImageResource(R.drawable.pause64); // setText("Pause");
+				btStart.setImageResource(R.drawable.pause64);
 				player.start(mp3);
 			} else {
 				btStart.setImageResource(R.drawable.play64);
@@ -62,15 +62,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		btStart.setOnClickListener(this);
 
 		webView = (WebView) findViewById(R.id.webView1);
+		
 		statusCheck(mp3);
 		updatePosts();
 	}
-
-	/*
-	 * @Override public boolean onCreateOptionsMenu(Menu menu) { // Inflate the
-	 * menu; this adds items to the action bar if it is present.
-	 * getMenuInflater().inflate(R.menu.main, menu); return true; }
-	 */
 
 	@Override
 	public void onClick(View view) {
@@ -135,7 +130,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			@Override
 			protected void onPostExecute(Void result){
 				
-				webView.loadData(html, "text/html", "iso-8859-1");				
+				webView.loadData(html, "text/html;charset=utf-8", "utf-8");				
 			}
 			
 		};
