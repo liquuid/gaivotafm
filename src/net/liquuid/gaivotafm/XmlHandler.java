@@ -75,51 +75,43 @@ public class XmlHandler {
 		}
 	}
 
-	public void fetchXML() {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					URL url = new URL(urlString);
-					HttpURLConnection conn = (HttpURLConnection) url
-							.openConnection();
-					conn.setReadTimeout(10000 /* milliseconds */);
-					conn.setConnectTimeout(15000 /* milliseconds */);
-					conn.setRequestMethod("GET");
-					conn.setDoInput(true);
-					// Starts the query
-					conn.connect();
-					InputStream stream = conn.getInputStream();
-					xmlFactoryObject = XmlPullParserFactory.newInstance();
-					XmlPullParser myparser = xmlFactoryObject.newPullParser();
-					myparser.setFeature(
-							XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-					myparser.setInput(stream, null);
-					parseXMLAndStoreIt(myparser);
-					stream.close();
+	public String fetchXML() {
+		try {
+			URL url = new URL(urlString);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setReadTimeout(10000 /* milliseconds */);
+			conn.setConnectTimeout(15000 /* milliseconds */);
+			conn.setRequestMethod("GET");
+			conn.setDoInput(true);
+			// Starts the query
+			conn.connect();
+			InputStream stream = conn.getInputStream();
+			xmlFactoryObject = XmlPullParserFactory.newInstance();
+			XmlPullParser myparser = xmlFactoryObject.newPullParser();
+			myparser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+			myparser.setInput(stream, null);
+			parseXMLAndStoreIt(myparser);
+			stream.close();
 
-					Iterator iterator = posts.entrySet().iterator();
-					String head = "<html><head><style type=\"text/css\">hr { clear: both; float: none; width: 100%; height: 1px; "
-							+ "margin: 1.0em 0; border: none; background: #ddd; background-image: -webkit-gradient( "
-							+ "linear, left bottom, right bottom,color-stop(0, rgb(255,255,255)),color-stop(0.1, rgb"
-							+ "(221,221,221)),color-stop(0.9, rgb(221,221,221)),color-stop(1, rgb(255,255,255)));}"
-							+ "</style></head><body>";
-					
+			Iterator iterator = posts.entrySet().iterator();
+			String head = "<html><head><style type=\"text/css\">hr { clear: both; float: none; width: 100%; height: 1px; "
+					+ "margin: 1.0em 0; border: none; background: #ddd; background-image: -webkit-gradient( "
+					+ "linear, left bottom, right bottom,color-stop(0, rgb(255,255,255)),color-stop(0.1, rgb"
+					+ "(221,221,221)),color-stop(0.9, rgb(221,221,221)),color-stop(1, rgb(255,255,255)));}"
+					+ "</style></head><body>";
 
-					
-					String summary = "";
-					while (iterator.hasNext()) {
-						Map.Entry mapEntry = (Map.Entry) iterator.next();
-						summary = "<a href=\"" + mapEntry.getValue() + "\">"
-								+ mapEntry.getKey() + "</a><br><hr> " + summary;
-					}
-					postsRenderized = head + summary + "</body></html>";
-
-				} catch (Exception e) {
-				}
-
+			String summary = "";
+			while (iterator.hasNext()) {
+				Map.Entry mapEntry = (Map.Entry) iterator.next();
+				summary = "<a href=\"" + mapEntry.getValue() + "\">"
+						+ mapEntry.getKey() + "</a><br><hr> " + summary;
 			}
-		});
-		thread.start();
+			postsRenderized = head + summary + "</body></html>";
+
+		} catch (Exception e) {
+		}
+
+		return postsRenderized;
 	}
+
 }

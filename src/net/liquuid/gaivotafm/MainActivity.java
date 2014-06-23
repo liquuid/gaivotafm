@@ -1,5 +1,6 @@
 package net.liquuid.gaivotafm;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
@@ -16,17 +17,18 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private static final String CATEGORIA = "livro";
 	private PlayerMp3 player = new PlayerMp3();
+	private StatusCheck stsCheck = new StatusCheck();
+	private XmlHandler xmlHandler;
 	private ImageButton btStart;
 	private ToggleButton btStatus;
 	private RadioGroup radiogroup;
 	private WebView webView;
 	private String mp3baixa = "http://stream.gaivota.fm.br:8000/1049.mp3";
 	private String mp3alta = "http://stream.gaivota.fm.br:8000/1049-alta.mp3";
-	private String mp3 = mp3alta;
+	private String mp3;
 	private String RSSUrl = "http://gaivota.fm.br/blog/feed";
-	private XmlHandler obj;
-	private StatusCheck stsCheck = new StatusCheck();
 	private String html = "";
+	boolean checkResult;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		radiogroup = (RadioGroup) findViewById(R.id.radioGroup);
 
 		radiogroup.check(R.id.altaQualidade);
+		mp3 = mp3alta;
 
 		if (savedInstanceState != null) {
 			String status = savedInstanceState.getString("playerStatus");
@@ -56,41 +59,11 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 		}
 
-		stsCheck.check(mp3, btStatus);
-
-		obj = new XmlHandler(RSSUrl);
-		obj.fetchXML();
-		obj.getPosts();
-
-		while (obj.parsingComplete)
-			;
-		System.out.println(obj.getPosts());
-		// html = obj.getPosts();
-		html = "<html><head><style type=\"text/css\">hr { clear: both; float: none;"
-				+ " width: 100%; height: 1px; margin: 1.0em 0; border: none; "
-				+ "background: #ddd; background-image: -webkit-gradient( linear, "
-				+ "left bottom, right bottom,color-stop(0, rgb(255,255,255)),color-stop"
-				+ "(0.1, rgb(221,221,221)),color-stop(0.9, rgb(221,221,221)),color-stop"
-				+ "(1, rgb(255,255,255)));}</style></head><body>"
-				+ "<a href=\"http://gaivota.fm.br/blog/novidades-no-ar\">Novidades no ar</a>"
-				+ "<br><hr> <a href=\"http://gaivota.fm.br/blog/recado-de-um-ouvinte\">"
-				+ "Recado de um ouvinte</a><br><hr> <a href=\"http://gaivota.fm.br/blog\">"
-				+ "Blogs Gaivota FM</a><br><hr> <a href=\"http://gaivota.fm.br/blog/amplific"
-				+ "ador-marshall-valvstate-vs65r\">Amplificador Marshall Valvstate VS65R</a>"
-				+ "<br><hr> <a href=\"http://gaivota.fm.br/blog/amplificador-fender-frontman-25r-1\">"
-				+ "Amplificador Fender Frontman 25R</a><br><hr> <a href=\"http://gaivota.fm.br/b"
-				+ "log/pedal-boss-ps-3\">Pedal Boss PS-3</a><br><hr> <a href=\"http://gaivota.fm"
-				+ ".br/blog/pronatec-curso-operador-de-udio\">Pronatec - Curso Operador de &Aacute;udio"
-				+ "</a><br><hr> <a href=\"http://gaivota.fm.br/blog/reformula-o-do-portal-gaivota-fm\">"
-				+ "Reformula&ccedil;&atilde;o do portal Gaivota FM</a><br><hr> </body></html>";
-
 		btStart.setOnClickListener(this);
 
 		webView = (WebView) findViewById(R.id.webView1);
-
-		webView.loadData(html, "text/html", "utf-8");
-		// webView.loadUrl("http://gaivota.fm.br/blog/feed");
-
+		statusCheck(mp3);
+		updatePosts();
 	}
 
 	/*
@@ -144,7 +117,53 @@ public class MainActivity extends Activity implements OnClickListener {
 			break;
 		}
 	}
-
+    //@Override
+	private void updatePosts(){
+		AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
+			WebView webView = (WebView) findViewById(R.id.webView1);
+			@Override
+			protected void onPreExecute(){
+				webView.loadUrl("file:///android_asset/loading_rss.html");
+			}
+			
+			@Override
+			protected Void doInBackground(Void... params) {
+				xmlHandler = new XmlHandler(RSSUrl);
+				html = xmlHandler.fetchXML();
+				return null;
+			}
+			@Override
+			protected void onPostExecute(Void result){
+				
+				webView.loadData(html, "text/html", "iso-8859-1");				
+			}
+			
+		};
+		task.execute();
+		
+	}
+	
+	private void statusCheck(final String mp3){
+		
+		AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
+			ToggleButton btStatus = (ToggleButton) findViewById(R.id.toggleButton1);			
+			
+			@Override
+			protected Void doInBackground(Void... params) {
+				if (stsCheck.check(mp3)){
+					checkResult = true;
+				}
+				return null;
+			}
+			@Override
+			protected void onPostExecute(Void result){
+				btStatus.setChecked(checkResult);		
+			}
+		};
+		task.execute();
+		
+	}
+	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
