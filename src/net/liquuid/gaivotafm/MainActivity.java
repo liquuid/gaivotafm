@@ -81,6 +81,7 @@ public class MainActivity extends Activity implements OnClickListener {
 					} else if (rg == 2) {
 						mp3 = mp3baixa;
 					}
+					statusCheck(mp3);
 					player.start(mp3);
 					btStart.setImageResource(R.drawable.pause64);
 				}
@@ -147,12 +148,14 @@ public class MainActivity extends Activity implements OnClickListener {
 			protected Void doInBackground(Void... params) {
 				if (stsCheck.check(mp3)){
 					checkResult = true;
-				}
+				} 
 				return null;
 			}
 			@Override
 			protected void onPostExecute(Void result){
-				btStatus.setChecked(checkResult);		
+				btStatus.setChecked(checkResult);
+				if(!checkResult)
+					Toast.makeText(MainActivity.this, "Servidor de Stream fora do ar", Toast.LENGTH_LONG).show();
 			}
 		};
 		task.execute();
