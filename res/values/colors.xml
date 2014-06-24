@@ -1,4 +1,5 @@
 <resources>
     <color name="gray">#dddddd</color>
     <color name="green">#bbffbb</color>
+    <color name="red">#ffbbbb</color>
 </resources>

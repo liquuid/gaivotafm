@@ -27,11 +27,11 @@
 
             <ToggleButton
                 android:id="@+id/toggleButton1"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="ToggleButton"
                 android:background="@drawable/custom_btn_toggle"
-                android:textOff="NO AR"
+                android:text="ToggleButton"
+                android:textOff="FORA DO AR"
                 android:textOn="NO AR" />
 
         <ImageButton
