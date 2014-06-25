@@ -3,6 +3,11 @@ package net.liquuid.gaivotafm;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,6 +34,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	private String RSSUrl = "http://gaivota.fm.br/blog/feed";
 	private String html = "";
 	boolean checkResult;
+	private NotificationManager nm;
+	private Notification n;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +72,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 		statusCheck(mp3);
 		updatePosts();
+		notification(this, "Gaivota FM", "Gaivota FM", "Ubatuba 104.9", MainActivity.class);
 	}
 
 	@Override
@@ -162,16 +170,31 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 	}
 	
+	protected void notification(Context context, CharSequence msgStatusBar,
+			CharSequence title, CharSequence message, Class<?> activity){
+		nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		n = new Notification(R.drawable.play32, msgStatusBar, System.currentTimeMillis());
+		n.flags = Notification.FLAG_NO_CLEAR;
+	
+		PendingIntent p = PendingIntent.getActivity(this, 0, new Intent(this, activity), 0);
+		n.setLatestEventInfo(this, title, message, p);
+		nm.notify(R.drawable.play32, n);
+		
+		
+	}
+	
+	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putString("playerStatus", player.status());
 		outState.putInt("radioGroup", radiogroup.getCheckedRadioButtonId());
 	}
-
+	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		nm.cancelAll();
 		player.fechar();
 	}
 
