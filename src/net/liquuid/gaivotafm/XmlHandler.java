@@ -5,6 +5,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -19,7 +20,7 @@ public class XmlHandler {
 	private String urlString = null;
 	private XmlPullParserFactory xmlFactoryObject;
 	public volatile boolean parsingComplete = true;
-	public Map<String, String> posts = new HashMap<String, String>();
+	public Map<String, String> posts = new LinkedHashMap<String, String>();
 	private String postsRenderized = "";
 
 	public XmlHandler(String url) {
@@ -50,16 +51,19 @@ public class XmlHandler {
 			event = myParser.getEventType();
 			while (event != XmlPullParser.END_DOCUMENT) {
 				String name = myParser.getName();
+				
 				switch (event) {
 				case XmlPullParser.START_TAG:
 					break;
 				case XmlPullParser.TEXT:
 					text = myParser.getText();
+					
 					break;
 				case XmlPullParser.END_TAG:
 					if (name.equals("title")) {
 						posts.put(text, null);
 						title = text;
+						System.out.println(title);
 					} else if (name.equals("link")) {
 						posts.put(title, text);
 						link = text;
@@ -92,7 +96,7 @@ public class XmlHandler {
 			myparser.setInput(stream, null);
 			parseXMLAndStoreIt(myparser);
 			stream.close();
-
+			
 			Iterator iterator = posts.entrySet().iterator();
 			String head = "<html><head><style type=\"text/css\">hr { clear: both; float: none; width: 100%; height: 1px; "
 					+ "margin: 1.0em 0; border: none; background: #ddd; background-image: -webkit-gradient( "
@@ -104,10 +108,12 @@ public class XmlHandler {
 			String summary = "";
 			while (iterator.hasNext()) {
 				Map.Entry mapEntry = (Map.Entry) iterator.next();
-				summary = "<a href=\"" + mapEntry.getValue() + "\">"
-						+ mapEntry.getKey() + "</a><br><hr> " + summary;
+				summary =  summary +"<a href=\"" + mapEntry.getValue() + "\">"
+						+ mapEntry.getKey() + "</a><br><hr> ";
+				System.out.println("+ " + mapEntry.getKey());
 			}
 			postsRenderized = head + summary + "</body></html>";
+			System.out.println(postsRenderized);
 
 		} catch (Exception e) {
 		}
