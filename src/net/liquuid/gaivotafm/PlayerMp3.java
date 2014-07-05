@@ -1,9 +1,11 @@
 package net.liquuid.gaivotafm;
 
+import android.app.ProgressDialog;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.util.Log;
+import android.view.View;
 
 public class PlayerMp3 implements OnCompletionListener{
 	
@@ -33,25 +35,57 @@ public class PlayerMp3 implements OnCompletionListener{
 		player.setOnCompletionListener(this);
 	}
 	
-	public void start(String mp3){
+	public void start(String mp3,final ProgressDialog ringProgressDialog){
 		this.mp3 = mp3;
 		try{
+			Log.i(CATEGORIA, Integer.toString(status));
 			switch (status){
 				case INICIADO:
-					player.stop();
+					player.reset();
+					player.setDataSource(mp3);
+					player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+						  public void onPrepared(MediaPlayer mp) {
+						      mp.start();
+						      if(ringProgressDialog != null){
+						    	  ringProgressDialog.dismiss();
+						      }
+						  }
+						});
+					player.prepareAsync();
+					break;
 				case PARADO:
 					player.reset();
+					break;
 				case NOVO:
 					player.setDataSource(mp3);
 					player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 						  public void onPrepared(MediaPlayer mp) {
 						      mp.start();
+						      if(ringProgressDialog != null){
+						    	  ringProgressDialog.dismiss();
+						      }
 						  }
 						});
 					player.prepareAsync();
-				case PAUSADO:
-					player.start();
 					break;
+				case PAUSADO:
+					ringProgressDialog.dismiss();
+					if (!player.isPlaying()){
+						player.start();
+					}
+					else{
+						player.setDataSource(mp3);
+						player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+							  public void onPrepared(MediaPlayer mp) {
+							      mp.start();
+							      if(ringProgressDialog != null){
+							    	  ringProgressDialog.dismiss();
+							      }
+							  }
+							});
+						player.prepareAsync();
+					}
+				break;
 			}
 			status = INICIADO;
 		} catch (Exception e) {
@@ -72,9 +106,6 @@ public class PlayerMp3 implements OnCompletionListener{
 		player = null;
 	}
 	
-	
-	
-
 	@Override
 	public void onCompletion(MediaPlayer mp) {
 		Log.i(CATEGORIA, "Fim da música: " + mp3);

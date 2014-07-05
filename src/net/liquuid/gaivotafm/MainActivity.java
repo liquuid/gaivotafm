@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -36,6 +37,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	boolean checkResult;
 	private NotificationManager nm;
 	private Notification n;
+	private ProgressDialog ringProgressDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +61,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 			if (status == "playing") {
 				btStart.setImageResource(R.drawable.pause64);
-				player.start(mp3);
+				player.start(mp3, ringProgressDialog);
 			} else {
 				btStart.setImageResource(R.drawable.play64);
 				player.pause();
@@ -90,7 +92,8 @@ public class MainActivity extends Activity implements OnClickListener {
 						mp3 = mp3baixa;
 					}
 					statusCheck(mp3);
-					player.start(mp3);
+					launchRingDialog(view);
+					player.start(mp3, ringProgressDialog);
 					btStart.setImageResource(R.drawable.pause64);
 				}
 			}
@@ -107,16 +110,21 @@ public class MainActivity extends Activity implements OnClickListener {
 		case R.id.altaQualidade:
 			if (checked) {
 				mp3 = mp3alta;
-				if (player.isPlaying())
-					player.start(mp3);
+				if (player.isPlaying()){
+					launchRingDialog(view);
+					player.start(mp3, ringProgressDialog);
+				}
 
 			}
 			break;
 		case R.id.baixaQualidade:
 			if (checked){
 				mp3 = mp3baixa;
-				if (player.isPlaying())
-					player.start(mp3);
+				if (player.isPlaying()){
+					launchRingDialog(view);
+					player.start(mp3, ringProgressDialog);
+				}
+					
 			}
 			break;
 		}
@@ -183,6 +191,21 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 	}
 	
+	public void launchRingDialog(View view) {
+		ringProgressDialog = ProgressDialog.show(MainActivity.this, "Aguarde ...",	"Preparando Stream ...", true);
+		ringProgressDialog.setCancelable(true);
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(10000);
+				} catch (Exception e) {
+
+				}
+				//ringProgressDialog.dismiss();
+			}
+		}).start();
+	}
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {

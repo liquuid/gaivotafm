@@ -63,7 +63,6 @@ public class XmlHandler {
 					if (name.equals("title")) {
 						posts.put(text, null);
 						title = text;
-						System.out.println(title);
 					} else if (name.equals("link")) {
 						posts.put(title, text);
 						link = text;
@@ -110,10 +109,8 @@ public class XmlHandler {
 				Map.Entry mapEntry = (Map.Entry) iterator.next();
 				summary =  summary +"<a href=\"" + mapEntry.getValue() + "\">"
 						+ mapEntry.getKey() + "</a><br><hr> ";
-				System.out.println("+ " + mapEntry.getKey());
 			}
 			postsRenderized = head + summary + "</body></html>";
-			System.out.println(postsRenderized);
 
 		} catch (Exception e) {
 		}
