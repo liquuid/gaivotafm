@@ -173,7 +173,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	protected void notification(Context context, CharSequence msgStatusBar,
 			CharSequence title, CharSequence message, Class<?> activity){
 		nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		n = new Notification(R.drawable.play32, msgStatusBar, System.currentTimeMillis());
+		n = new Notification(R.drawable.play32, msgStatusBar, 0);
 		n.flags = Notification.FLAG_NO_CLEAR;
 	
 		PendingIntent p = PendingIntent.getActivity(this, 0, new Intent(this, activity), 0);
