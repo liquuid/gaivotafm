@@ -16,4 +16,4 @@ local.properties
 *.dex
 gen/
 *.log
-
+.idea
